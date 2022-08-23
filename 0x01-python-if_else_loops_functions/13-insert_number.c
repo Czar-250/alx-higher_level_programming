@@ -1,26 +1,44 @@
-#ifndef LISTS_H
-#define LISTS_H
-
+#include "lists.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 /**
- * struct listint_s - singly linked list
- * @n: integer
- * @next: points to the next node
+ * insert_node - inserts a number in an ordered linked list
+ * @head: double pointer to the linked list
+ * @number: number to insert in the new node
  *
- * Description: singly linked list node structure
- * for Alx project
+ * Return: address of the new node, or NULL
  */
-typedef struct listint_s
+listint_t *insert_node(listint_t **head, int number)
 {
-	int n;
-	struct listint_s *next;
-} listint_t;
+	listint_t *current = *head;
+	listint_t *new = NULL;
+	listint_t *temp = NULL;
 
-size_t print_listint(const listint_t *h);
-listint_t *add_nodeint_end(listint_t **head, const int n);
-void free_listint(listint_t *head);
+	if (!head)
+		return (NULL);
 
-listint_t *insert_node(listint_t **head, int number);
+	new = malloc(sizeof(listint_t));
+	if (!new)
+		return (NULL);
+	new->n = number;
+	new->next = NULL;
 
-#endif /* LISTS_H */
+	if (!*head || (*head)->n > number)
+	{
+		new->next = *head;
+		return (*head = new);
+	}
+	else
+	{
+		while (current && current->n < number)
+		{
+			temp = current;
+			current = current->next;
+		}
+		temp->next = new;
+		new->next = current;
+	}
+
+	return (new);
+}
